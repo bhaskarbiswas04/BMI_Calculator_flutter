@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'icon_content.dart';
 import 'reuseable_card.dart';
-
-const bottomContainerHeight = 60.0;
-const activeCardColor = Color(0xFF1D1E33);
-const inactiveCardColor = Color(0xFF111328);
+import 'constants.dart';
+import 'methods.dart';
+import 'result_page.dart';
 
 enum GenderType {
   male,
@@ -19,9 +18,11 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
-  
   GenderType? selectedGender;
-  
+  int height = 150;
+  int weight = 50;
+  int age = 18;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,69 +33,146 @@ class _InputPageState extends State<InputPage> {
         ),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
+                  child: ReusableCard(
+                    onpress: () {
                       setState(() {
                         selectedGender = GenderType.male;
                       });
                     },
-                    child: ReusableCard(
-                      color: selectedGender == GenderType.male
-                          ? activeCardColor
-                          : inactiveCardColor,
-                      childCard: IconContent(
-                          icon: FontAwesomeIcons.mars, label: 'MALE'),
-                    ),
+                    color: selectedGender == GenderType.male
+                        ? kActiveCardColor
+                        : kInactiveCardColor,
+                    childCard:
+                        IconContent(icon: FontAwesomeIcons.mars, label: 'MALE'),
                   ),
                 ),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
+                  child: ReusableCard(
+                    onpress: () {
                       setState(() {
                         selectedGender = GenderType.female;
                       });
                     },
-                    child: ReusableCard(
-                      color: selectedGender == GenderType.female
-                          ? activeCardColor
-                          : inactiveCardColor,
-                      childCard: IconContent(
-                          icon: FontAwesomeIcons.venus, label: 'FEMALE'),
-                    ),
+                    color: selectedGender == GenderType.female
+                        ? kActiveCardColor
+                        : kInactiveCardColor,
+                    childCard: IconContent(
+                        icon: FontAwesomeIcons.venus, label: 'FEMALE'),
                   ),
                 ),
               ],
             ),
           ),
           Expanded(
-            child: ReusableCard(color: activeCardColor),
+            child: ReusableCard(
+              color: kInactiveCardColor,
+              childCard: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'HEIGHT',
+                    style: kLabelTextStyle,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: <Widget>[
+                      Text(
+                        height.toString(),
+                        style: kNumberTextStyle,
+                      ),
+                      const Text(
+                        'CM',
+                        style: kLabelTextStyle,
+                      ),
+                    ],
+                  ),
+                  Slider(
+                    value: height.toDouble(),
+                    min: 120.0,
+                    max: 220.0,
+                    onChanged: (double newValue) {
+                      setState(() {
+                        height = newValue.round();
+                      });
+                    },
+                    activeColor: Colors.pink,
+                    inactiveColor: Colors.pink[300],
+                  ),
+                ],
+              ),
+            ),
           ),
           Expanded(
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: ReusableCard(color: activeCardColor),
+                  child: ReusableCard(
+                    color: kInactiveCardColor,
+                    childCard: weight_and_age_widget(
+                      type: 'WEIGHT',
+                      defaultTypeNum: weight,
+                      onPressedMinus: () {
+                        setState(() {
+                          weight--;
+                        });
+                      },
+                      onPressedPlus: () {
+                        setState(() {
+                          weight++;
+                        });
+                      },
+                    ),
+                  ),
                 ),
                 Expanded(
-                  child: ReusableCard(color: activeCardColor),
+                  child: ReusableCard(
+                    color: kInactiveCardColor,
+                    childCard: weight_and_age_widget(
+                      type: 'AGE',
+                      defaultTypeNum: age,
+                      onPressedMinus: () {
+                        setState(() {
+                          age--;
+                        });
+                      },
+                      onPressedPlus: () {
+                        setState(() {
+                          age++;
+                        });
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 15.0),
-            color: Colors.pink,
-            width: double.infinity,
-            height: bottomContainerHeight,
-            child: const Center(
-              child: Text(
-                'Calculate Your BMI',
-                style: TextStyle(fontSize: 25.0),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ResultPage(),
+                ),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.only(top: 15.0),
+              color: Colors.pink,
+              width: double.infinity,
+              height: kBottomContainerHeight,
+              child: const Center(
+                child: Text(
+                  'CALCULATE',
+                  style: TextStyle(fontSize: 25.0),
+                ),
               ),
             ),
           )
