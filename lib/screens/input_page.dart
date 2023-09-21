@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'icon_content.dart';
-import 'reuseable_card.dart';
-import 'constants.dart';
-import 'methods.dart';
+import 'package:bmi_calculator/components/reuseable_card.dart';
+import 'package:bmi_calculator/constants.dart';
+import 'package:bmi_calculator/methods.dart';
 import 'result_page.dart';
+import 'package:bmi_calculator/components/bottom_button.dart';
+import 'package:bmi_calculator/components/icon_content.dart';
+import 'package:bmi_calculator/calculator_brain.dart';
 
 enum GenderType {
   male,
@@ -154,30 +156,37 @@ class _InputPageState extends State<InputPage> {
               ],
             ),
           ),
-          GestureDetector(
-            onTap: () {
+          BottomButton(
+            onPressed: () {
+              CalculatorBrain calc =
+                  CalculatorBrain(height: height, weight: weight);
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ResultPage(),
+                  builder: (context) => ResultPage(
+                    BMIResult: calc.calculateBMI(),
+                    resultText: calc.getResult(),
+                    resultInterpretation: calc.getInterpretation(),
+                  ),
                 ),
               );
             },
-            child: Container(
-              margin: const EdgeInsets.only(top: 15.0),
-              color: Colors.pink,
-              width: double.infinity,
-              height: kBottomContainerHeight,
-              child: const Center(
-                child: Text(
-                  'CALCULATE',
-                  style: TextStyle(fontSize: 25.0),
-                ),
-              ),
-            ),
-          )
+            buttonText: 'CALCULATE',
+          ),
         ],
       ),
     );
   }
 }
+
+
+
+// () {
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(
+//             builder: (context) => const ResultPage(),
+//           ),
+//         );
+//       }
